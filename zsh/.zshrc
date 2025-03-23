@@ -104,7 +104,14 @@ source $ZSH/oh-my-zsh.sh
 
 #Aliases
 alias zed="/Applications/Zed.app/Contents/MacOS/cli"
-alias brewdump="brew bundle dump --file=~/.dotfiles/Brewfile"
+alias brewdump="brew bundle dump --file=~/.dotfiles/Brewfile --force && echo 'Brewfile has been updated'"
+alias gac='f() {
+    if [ "$2" = "-m" ]; then
+        git add "$1" && git commit -m "$3"
+    else
+        echo "Usage: gac <file> -m \"commit message\""
+    fi
+}; f'
 
 ################# GO SETUP #################
 
