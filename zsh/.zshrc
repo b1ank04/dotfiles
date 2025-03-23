@@ -103,15 +103,16 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 #Aliases
-alias zed="/Applications/Zed.app/Contents/MacOS/cli"
-alias brewdump="brew bundle dump --file=~/.dotfiles/Brewfile --force && echo 'Brewfile has been updated'"
+alias zed="/Applications/Zed.app/Contents/MacOS/cli" # Zed text editor
+alias brewdump="brew bundle dump --file=~/.dotfiles/Brewfile --force && echo 'Brewfile has been updated'" # Update Brewdile dump
+alias local-cli="/Users/markshmarov/projects/egym/egym-cli/bin/egym-cli"
 alias gac='f() {
     if [ "$2" = "-m" ]; then
         git add "$1" && git commit -m "$3"
     else
         echo "Usage: gac <file> -m \"commit message\""
     fi
-}; f'
+}; f' # Git add and commit function
 
 ################# GO SETUP #################
 
