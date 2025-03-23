@@ -18,7 +18,7 @@ yabai -m config layout bsp
 yabai -m config window_placement second_child
 
 # padding set to 12px
-yabai -m config top_padding 15
+yabai -m config top_padding 45
 yabai -m config bottom_padding 15
 yabai -m config left_padding 15
 yabai -m config right_padding 15
@@ -52,5 +52,5 @@ yabai -m rule --add app="^Finder$" manage=off
 # window border settings
 borders active_color=0xff00ff00 width=6.0 &
 
-# Hide menubar
-yabai -m config menubar_opacity 0.0
+# Hide menubar (Removes access to default menubar functions)
+# yabai -m config menubar_opacity 0.0
