@@ -44,17 +44,20 @@ alias gac='f() {
 
 ################# GO SETUP #################
 
+# Set GOPRIVATE to allow private repositories
+export GOPRIVATE="github.com/egym"
+
 # Set GOROOT to the Homebrew installation path
 export GOROOT=/opt/homebrew/opt/go/libexec
-
-# Add GOROOT and GOPATH to your PATH
-export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
 # Set GOPATH to your Go workspace
 export GOPATH=$HOME/go
 
 # Set GOBIN to the bin directory inside GOPATH
 export GOBIN=$GOPATH/bin
+
+# Add GOROOT and GOPATH to your PATH
+export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
 ################################################
 
