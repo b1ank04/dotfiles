@@ -1,1 +1,2 @@
-/.git/*
+/oh-my-zsh/.oh-my-zsh/.git/*
+/oh-my-zsh/.oh-my-zsh/plugins/zsh-syntax-highlighting/.git/*
