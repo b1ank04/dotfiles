@@ -61,4 +61,7 @@ export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
 ################################################
 
+
+export GPG_TTY=$(tty) # Fix for GPG error
+
 fastfetch
