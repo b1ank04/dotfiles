@@ -1,0 +1,269 @@
+#!/usr/bin/env zsh
+
+#shellcheck disable=SC2016
+#shellcheck disable=SC2059
+
+DASUNG_SCREEN_WIDTH=900
+NOTCH_SCREEN_HEIGHT_1=1169
+NOTCH_SCREEN_HEIGHT_2=982
+
+displays_except_dasung=$(yabai -m query --displays | \
+  jq -r "map(select(.frame.w != $DASUNG_SCREEN_WIDTH) | .index) | \
+  join(\",\")")
+notch_display=$(yabai -m query --displays | \
+                    jq -r ".[] | \
+                    select(.frame.h == $NOTCH_SCREEN_HEIGHT_1 \
+                    or .frame.h == $NOTCH_SCREEN_HEIGHT_2) | .index")
+bar=(
+    notch_width="$([ -n "$notch_display" ] && echo 230 || echo 0)"
+    display="$displays_except_dasung"
+    position=top
+    color=0x00000000
+    height=54
+    padding_left=5
+    padding_right=10
+)
+
+default=(
+    label.font.family="SF Pro Rounded"
+    label.padding_left=10
+    label.padding_right=10
+    label.align=center
+    icon.padding_left=16
+    icon.padding_right=16
+    icon.font.size=14
+)
+
+blur_bg=(
+    background.drawing=on
+    blur_radius=24
+    background.height=36
+    background.corner_radius=10
+    background.color=0x20FFF7ED
+)
+
+spacer=(
+    label.drawing=off
+    icon.drawing=off
+)
+
+alcovebar --bar "${bar[@]}" --default "${default[@]}"
+
+## Apple System Menu
+alcovebar \
+    --add item apple left --set apple \
+    display=1 label="􀣺" label.width=40 icon.drawing=off
+
+## Spacer
+alcovebar \
+    --add item spacer.1 left \
+    --set spacer.1 width=5 "${spacer[@]}"
+
+## Spaces
+brackets=()
+DISPLAY_LABELS=('' 'ONE' 'TWO' 'THREE' 'FOUR')
+script=\
+$(cat <<'SCRIPT'
+#------------------------------------------------------------------------------
+alcovebar \
+  --animate tanh 18 \
+  --set $NAME \
+  label.background.color=$([ "$SELECTED" = true ] && echo 0x33FFF7ED) \
+  label.background.border_color=$([ "$SELECTED" = true ] && echo 0xE5E7EB) \
+#------------------------------------------------------------------------------
+SCRIPT
+)
+spaces_groups=$(yabai -m query --displays | \
+                    jq -c 'sort_by(.index) | .[].spaces')
+display_index=1
+for group in $spaces_groups; do
+    item_name="display.$display_index"
+    brackets+=("$item_name")
+    alcovebar \
+        --add space "$item_name" left \
+        --set "$item_name" \
+        icon="􂤓" \
+        label="${DISPLAY_LABELS[$display_index]}" label.font.style="Black" \
+        label.padding_left=0 \
+        associated_space="$space" \
+        display="$display_index"
+    spaces=$(echo "$group" | jq -r '.[]')
+    for space in $spaces; do
+        item_name="space.$space"
+        brackets+=("$item_name")
+
+        alcovebar \
+            --add space "$item_name" left \
+            --set "$item_name" icon.width=0 \
+            label="$space" label.align=center \
+            label.background.height=24 label.background.corner_radius=5 \
+            associated_space="$space" script="$script" \
+            display="$display_index"
+        ((i++))
+    done
+    ((display_index++))
+done
+
+alcovebar \
+    --add item spacer.3 left \
+    --set spacer.3 width=12 "${spacer[@]}"
+
+brackets+=(spacer.3)
+
+alcovebar \
+    --add bracket spaces_bracket "${brackets[@]}" \
+    --set spaces_bracket "${blur_bg[@]}" background.corner_radius=0x100A0A0A
+
+alcovebar \
+    --add item spacer.4 left \
+    --set spacer.4 width=12 "${spacer[@]}"
+
+app_script=\
+$(cat <<'SCRIPT'
+#------------------------------------------------------------------------------
+source ./icon_map.sh
+display=%s
+visible_space=$(yabai -m query --spaces --display $display | \
+                       jq -r '.[] | select(."is-visible" == true) | .index')
+app=$(yabai -m query --windows --space "$visible_space" | jq -r '.[0] | .app')
+active_display=$(yabai -m query --displays --display | jq -r '.index')
+if [ "$app" = "null" ]; then
+  icon_result='􀣰'
+  app="macOS"
+else
+  __icon_map "$app"
+  [ "$icon_result" = ":default:" ] && icon_result='􀀅'
+fi
+[[ "$display" =  "$active_display" ]] && color=0xFFFFFF00 || color=0xFFFFFFFF
+alcovebar --set $NAME \
+  icon="$icon_result" icon.color="$color" label="$app"
+#------------------------------------------------------------------------------
+SCRIPT
+)
+
+title_script=\
+$(cat <<'SCRIPT'
+#------------------------------------------------------------------------------
+export LC_CTYPE=en_US.UTF-8
+display=%s
+visible_space=$(yabai -m query --spaces --display $display | \
+                       jq -r '.[] | select(."is-visible" == true) | .index')
+title=$(yabai -m query --windows --space "$visible_space" | \
+              jq -r '.[0] | .title' | sed 's/^ *//;s/ *$//')
+[ "$title" = "null" ]  && title=""
+[ "${#title}" -gt 30 ] && ellipsis=... || ellipsis=
+title="${title:0:30}$ellipsis"
+alcovebar --set $NAME label="$title"
+#------------------------------------------------------------------------------
+SCRIPT
+)
+
+alcovebar --add event yabai_window_title_changed
+
+for display in \
+    $(yabai -m query --displays | \
+          jq -r "map(select(.frame.w != $DASUNG_SCREEN_WIDTH) | .index) | .[]");
+do
+    ## Current App
+    cur_app="cur_app.$display"
+    script=$(printf "$app_script" "$display")
+    [ "$display" == "$notch_display" ] && pos=q || pos=center
+    alcovebar \
+        --add item "$cur_app"  "$pos" \
+        --set "$cur_app" display="$display" \
+        icon.font="sketchybar-app-font:Regular:16" icon.padding_right=10 \
+        label.font.style="Black" label.padding_left=0 label.padding_right=4 \
+        script="$script" --subscribe "$cur_app" front_app_switched space_change
+
+    [ "$display" == "$notch_display" ] && pos=e || pos=center
+
+    ## Title
+    cur_app_title="cur_app_title.$display"
+    script=$(printf "$title_script" "$display")
+    alcovebar \
+        --add item "$cur_app_title" "$pos" \
+        --set "$cur_app_title" display="$display" \
+        icon.drawing=off label.padding_left=4 label.padding_right=16 \
+        script="$script" \
+        --subscribe "$cur_app_title" yabai_window_title_changed front_app_switched space_change
+
+    cur_app_bracket="cur_app_bracket.$display"
+    alcovebar \
+        --add bracket "$cur_app_bracket" "$cur_app" "$cur_app_title" \
+        --set "$cur_app_bracket" "${blur_bg[@]}" background.color=0x20000812
+done
+
+# Date & Time
+alcovebar \
+    --add item time right \
+    --set time \
+    script='alcovebar -m --set $NAME label="$(date +%H:%M)"' update_freq=10 \
+    icon.drawing=off label.padding_left=0 label.padding_right=20
+
+script=\
+$(cat <<'SCRIPT'
+#------------------------------------------------------------------------------
+m=$(date +%m | sed 's/^0*//')
+d=$(date +%d | sed 's/^0*//')
+md=$(ccal -u -x \
+	  | xq -x \
+	       "//ccal:month[@value=$m]//ccal:day[@value=$d]/@cmonthname | \
+	        //ccal:month[@value=$m]//ccal:day[@value=$d]/@cdatename" \
+	  | tr -d '\n')
+alcovebar -m --set $NAME label="$md"
+#------------------------------------------------------------------------------
+SCRIPT
+)
+
+alcovebar \
+    --add item greg_date right \
+    --set greg_date \
+    script='alcovebar -m --set $NAME label=$(date +%m-%d)' update_freq=60 \
+    icon.drawing=off y_offset=6 width=0 \
+    label.padding_left=16 label.padding_right=8 label.font.size=9
+
+alcovebar \
+    --add item chn_date right \
+    --set chn_date \
+    script="$script" update_freq=60 \
+    icon.drawing=off y_offset=-6 \
+    label.padding_left=16 label.padding_right=8 label.font.size=9
+
+alcovebar \
+    --add bracket dt_bracket time greg_date chn_date \
+    --set dt_bracket "${blur_bg[@]}" background.corner_radius=0x0A100A0A
+
+alcovebar \
+    --add item spacer.5 right \
+    --set spacer.5 width=12 "${spacer[@]}"
+
+# Most cared statuses
+if defaults read -g AppleLanguages | awk 'NR==2' | grep -q "ja"; then
+    right_items=(
+        "コントロールセンター,Battery"
+        "コントロールセンター,Sound"
+        "TextInputMenuAgent,Item-0"
+    )
+else
+    right_items=(
+        "Control Center,Battery"
+        "Control Center,Sound"
+        "TextInputMenuAgent,Item-0"
+    )
+fi
+
+for i in "${!right_items[@]}"; do
+    item="${right_items[$i]}"
+    alcovebar \
+        --add alias "$item" right \
+        --set "$item" alias.color="0xFFFFFFFF" \
+        width=40 padding_left=6 padding_right=12 \
+        icon.drawing=off label.drawing=off
+done
+
+alcovebar \
+    --add bracket sysst_bracket "${right_items[@]}" \
+    --set sysst_bracket "${blur_bg[@]}"
+
+alcovebar --update
+echo "alcovebar loaded"

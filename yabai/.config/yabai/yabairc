@@ -33,9 +33,9 @@ yabai -m config normal_window_opacity 0.95
 borders active_color=0xff00ff00 width=6.0 &
 
 # Animations
-yabai -m config window_animation_duration    0.1
+yabai -m config window_animation_duration    0.05
 yabai -m config window_animation_frame_rate  120
-yabai -m config window_animation_easing      ease_out_quint
+#yabai -m config window_animation_easing      ease_out_quint
 
 # ------------------------------------
 
