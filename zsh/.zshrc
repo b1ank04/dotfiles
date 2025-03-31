@@ -29,6 +29,8 @@ source $ZSH/oh-my-zsh.sh
 
 export LANG=en_US.UTF-8
 
+fastfetch
+
 #Aliases
 alias zed="/Applications/Zed.app/Contents/MacOS/cli" # Zed text editor
 alias brewdump="brew bundle dump --file=~/.dotfiles/Brewfile --force && echo 'Brewfile has been updated'" # Update Brewdile dump
@@ -61,7 +63,13 @@ export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
 ################################################
 
+############## NodeJS SETUP ################
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+################################################
+
 
 export GPG_TTY=$(tty) # Fix for GPG error
-
-fastfetch
