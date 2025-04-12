@@ -30,7 +30,7 @@ yabai -m config active_window_opacity 1.0
 yabai -m config normal_window_opacity 0.95
 
 # Border settings
-borders active_color=0xff00ff00 width=6.0 &
+borders active_color=0xff66ffff width=4.5 &
 
 # Animations
 yabai -m config window_animation_duration    0.05
