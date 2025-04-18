@@ -70,6 +70,13 @@ export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 
 ################################################
 
+
+export GHCR_TOKEN=$(<~/.ghcr-token)
+
+export PATH="/opt/X11/bin:$PATH"
+
+export PATH="/usr/X11/bin:$PATH"
+
 ############## NodeJS SETUP ################
 
 export NVM_DIR="$HOME/.nvm"
