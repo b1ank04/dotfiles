@@ -73,7 +73,7 @@ export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 ################################################
 
 
-export GHCR_TOKEN=$(<~/.ghcr-token)
+export GHCR_TOKEN=$(<~/.config/secrets/ghcr-token)
 
 export PATH="/opt/X11/bin:$PATH"
 
@@ -89,9 +89,9 @@ export NVM_DIR="$HOME/.nvm"
 
 ############### EGYM_JFROG #####################
 
-export ARTIFACTORY_USERNAME=mark.shmarov@egym.com
-export ARTIFACTORY_PASSWORD=aV31071969_
+source ~/.config/secrets/jfrog-creds.sh
 
+################################################
 
 export GPG_TTY=$(tty) # Fix for GPG error
 
