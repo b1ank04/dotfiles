@@ -51,6 +51,7 @@ alias gac='f() {
         echo "Usage: gac <file> -m \"commit message\""
     fi
 }; f' # Git add and commit function
+alias ls='ls -1G'
 
 ################# GO SETUP #################
 
@@ -85,6 +86,11 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 ################################################
+
+############### EGYM_JFROG #####################
+
+export ARTIFACTORY_USERNAME=mark.shmarov@egym.com
+export ARTIFACTORY_PASSWORD=aV31071969_
 
 
 export GPG_TTY=$(tty) # Fix for GPG error
