@@ -22,7 +22,7 @@ zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 # DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 COMPLETION_WAITING_DOTS="true"
 
