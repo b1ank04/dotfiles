@@ -52,6 +52,7 @@ alias gac='f() {
     fi
 }; f' # Git add and commit function
 alias ls='ls -1G'
+alias k='kubectl'
 
 ################# GO SETUP #################
 
