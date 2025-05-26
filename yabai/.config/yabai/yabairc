@@ -39,12 +39,6 @@ yabai -m config window_animation_duration    0.05
 yabai -m config window_animation_frame_rate  120
 #yabai -m config window_animation_easing      ease_out_quint
 
-
-# Sketchybar active state
-yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
-yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
-yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
-
 # ------------------------------------
 
 
@@ -80,7 +74,7 @@ yabai -m mouse_drop_action swap
 # yabai -m config menubar_opacity 0.0
 
 # Bar margins, fixes window overlaying bar
-yabai -m config external_bar all:40:0
+# yabai -m config external_bar all:12:0
 
 # ----------------------
 

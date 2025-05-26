@@ -1,5 +1,29 @@
-#!/usr/bin/env lua
+#!/bin/bash
 
--- Load the sketchybar-package and prepare the helper binaries
-require("helpers")
-require("init")
+export PLUGIN_DIR = ~/.config/sketchybar/plugins
+
+
+# Remove all existing items
+sketchybar --remove '/.*/'
+
+# Add a spaces bar (showing only your spaces)
+sketchybar --add space space_template left \
+  --set space_template \
+    icon.drawing=off \
+    label.width=40 \
+    background.drawing=off \
+    script="$PLUGIN_DIR/space.sh"
+
+# Dynamically add spaces based on current display
+for sid in $(yabai -m query --spaces | jq '.[].index'); do
+  sketchybar --clone "space.$sid" space_template \
+    --set "space.$sid" \
+      space=$sid \
+      label="$sid"
+done
+
+# Listen for space changes
+sketchybar --add event space_change space_change
+
+# Update spaces when they change
+sketchybar --subscribe 'space.*' space_change
