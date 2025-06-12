@@ -28,6 +28,17 @@
           ]
         }
       ]
+    },
+    {
+      "host": "192.168.178.2",
+      "username": "server",
+      "projects": [
+        {
+          "paths": [
+            "/home/server"
+          ]
+        }
+      ]
     }
   ],
   "vim_mode": false,

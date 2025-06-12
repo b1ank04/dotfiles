@@ -17,7 +17,8 @@ yabai -m config layout bsp
 # Spawns Right: vertical split | Spawns Bottom: horizontal split
 yabai -m config window_placement second_child
 
-yabai -m config window_origin_display cursor
+# Window Spawn Rule
+yabai -m config window_origin_display focused
 
 # Padding and gap settings
 yabai -m config top_padding 15

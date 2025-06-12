@@ -46,6 +46,8 @@ alt - 6 : yabai -m space --focus 6
 alt - 7 : yabai -m space --focus 7
 alt - 8 : yabai -m space --focus 8
 alt - 9 : yabai -m space --focus 9
+ctrl - left  : yabai -m space --focus prev
+ctrl - right : yabai -m space --focus next
 
 # move window to space #
 shift + alt - 1 : yabai -m window --space 1;
@@ -62,4 +64,4 @@ shift + alt - r : yabai --restart-service
 
 # ---- Launch Applications ----
 
-alt - t : open -na /Applications/Kitty.app
+alt - t : open -na /Applications/Ghostty.app
